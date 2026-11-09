@@ -9,7 +9,7 @@ const navigation = [
   { label: "Data Nilai", icon: "bi-bar-chart" },
 ];
 
-const users = [
+const users_mahasiswa = [
   {
     initials: "NA",
     name: "Nadia Aulia",
@@ -48,32 +48,54 @@ const users = [
   },
 ];
 
-const chartBars = [
-  { month: "Mei", value: 42, previous: 30 },
-  { month: "Jun", value: 58, previous: 43 },
-  { month: "Jul", value: 48, previous: 35 },
-  { month: "Agu", value: 72, previous: 53 },
-  { month: "Sep", value: 63, previous: 42 },
-  { month: "Okt", value: 86, previous: 60 },
-  { month: "Nov", value: 70, previous: 50 },
+const users_dosen = [
+  {
+    initials: "AB",
+    name: "Andi Budi",
+    email: "andi.budi@email.com",
+    date: "05 Nov 2026",
+    NIDN: "1234567890",
+    status: "Aktif",
+    tone: "indigo",
+  },
+  {
+    initials: "CD",
+    name: "Citra Dewi",
+    email: "citra.d@email.com",
+    date: "04 Nov 2026",
+    NIDN: "0987654321",
+    status: "Aktif",
+    tone: "teal",
+  },
 ];
 
 function App() {
   const [activePage, setActivePage] = useState("Dashboard");
   const [search, setSearch] = useState("");
-  const [period, setPeriod] = useState("7 bulan terakhir");
+  const [students, setStudents] = useState(users_mahasiswa);
+  const [lecturers, setLecturers] = useState(users_dosen);
+  const [addType, setAddType] = useState("");
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
-  const filteredUsers = useMemo(
+  const filteredStudents = useMemo(
     () =>
-      users.filter((user) =>
-        `${user.name} ${user.email}`
+      students.filter((student) =>
+        `${student.name} ${student.email} ${student.NIM}`
           .toLowerCase()
           .includes(search.toLowerCase()),
       ),
-    [search],
+    [search, students],
+  );
+  const filteredLecturers = useMemo(
+    () =>
+      lecturers.filter((lecturer) =>
+        `${lecturer.name} ${lecturer.email} ${lecturer.NIDN}`
+          .toLowerCase()
+          .includes(search.toLowerCase()),
+      ),
+    [search, lecturers],
   );
 
   const formattedDate = new Intl.DateTimeFormat("id-ID", {
@@ -82,6 +104,42 @@ function App() {
     month: "long",
     year: "numeric",
   }).format(new Date());
+
+  function handleAddPerson(event) {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const name = formData.get("name").trim();
+    const email = formData.get("email").trim();
+    const identity = formData.get("identity").trim();
+    const initials = name
+      .split(/\s+/)
+      .slice(0, 2)
+      .map((part) => part[0])
+      .join("")
+      .toUpperCase();
+    const person = {
+      initials,
+      name,
+      email,
+      date: new Intl.DateTimeFormat("id-ID", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      }).format(new Date()),
+      status: "Aktif",
+      tone: addType === "mahasiswa" ? "blue" : "teal",
+      [addType === "mahasiswa" ? "NIM" : "NIDN"]: identity,
+    };
+
+    if (addType === "mahasiswa") {
+      setStudents((currentStudents) => [person, ...currentStudents]);
+    } else {
+      setLecturers((currentLecturers) => [person, ...currentLecturers]);
+    }
+
+    setAddType("");
+    event.currentTarget.reset();
+  }
 
   return (
     <div className="dashboard-shell">
@@ -130,7 +188,9 @@ function App() {
             >
               <i className={`bi ${item.icon}`} />
               <span>{item.label}</span>
-              {item.label === "Pesanan" && <span className="nav-count">4</span>}
+              {item.label === "Data Mahasiswa" && (
+                <span className="nav-count">{students.length}</span>
+              )}
             </button>
           ))}
         </nav>
@@ -191,16 +251,6 @@ function App() {
             <strong>{activePage}</strong>
           </div>
           <div className="topbar-actions">
-            <label className="search-box">
-              <i className="bi bi-search" />
-              <input
-                aria-label="Cari pengguna"
-                onChange={(event) => setSearch(event.target.value)}
-                placeholder="Cari sesuatu..."
-                value={search}
-              />
-              <kbd>⌘ K</kbd>
-            </label>
             <div className="popover-wrap">
               <button
                 aria-label="Notifikasi"
@@ -276,72 +326,206 @@ function App() {
             </div>
           </section>
 
-          <section className="stats-grid" aria-label="Ringkasan statistik">
-            <article className="stat-card">
+          <section
+            className="stats-grid people-stats"
+            aria-label="Ringkasan data"
+          >
+            <article className="stat-card people-stat-card">
               <div className="stat-heading">
                 <span>Jumlah Mahasiswa</span>
                 <span className="stat-icon sage">
-                  <i className="bi bi-wallet2" />
+                  <i className="bi bi-mortarboard" />
                 </span>
               </div>
-              <strong className="stat-value">Rp 24.580.000</strong>
-              <div className="stat-foot">
-                <span className="trend positive">
-                  <i className="bi bi-arrow-up-right" /> 12,8%
-                </span>
-                <span>dari bulan lalu</span>
-                <span className="stat-spark spark-one" />
+              <strong className="stat-value">{students.length}</strong>
+              <div className="people-stat-foot">
+                <span>Data mahasiswa terdaftar</span>
+                <button
+                  className="add-person-button"
+                  onClick={() => setAddType("mahasiswa")}
+                >
+                  <i className="bi bi-plus-lg" /> Tambah mahasiswa
+                </button>
               </div>
             </article>
-            <article className="stat-card">
+            <article className="stat-card people-stat-card">
               <div className="stat-heading">
-                <span>Total Pengguna</span>
+                <span>Jumlah Dosen</span>
                 <span className="stat-icon sand">
-                  <i className="bi bi-people" />
+                  <i className="bi bi-person-workspace" />
                 </span>
               </div>
-              <strong className="stat-value">1.284</strong>
-              <div className="stat-foot">
-                <span className="trend positive">
-                  <i className="bi bi-arrow-up-right" /> 8,2%
-                </span>
-                <span>dari bulan lalu</span>
-                <span className="stat-spark spark-two" />
-              </div>
-            </article>
-            <article className="stat-card">
-              <div className="stat-heading">
-                <span>Total Pesanan</span>
-                <span className="stat-icon blush">
-                  <i className="bi bi-bag-check" />
-                </span>
-              </div>
-              <strong className="stat-value">856</strong>
-              <div className="stat-foot">
-                <span className="trend positive">
-                  <i className="bi bi-arrow-up-right" /> 4,6%
-                </span>
-                <span>dari bulan lalu</span>
-                <span className="stat-spark spark-three" />
-              </div>
-            </article>
-            <article className="stat-card">
-              <div className="stat-heading">
-                <span>Produk Terjual</span>
-                <span className="stat-icon lilac">
-                  <i className="bi bi-box-seam" />
-                </span>
-              </div>
-              <strong className="stat-value">2.456</strong>
-              <div className="stat-foot">
-                <span className="trend negative">
-                  <i className="bi bi-arrow-down-right" /> 2,1%
-                </span>
-                <span>dari bulan lalu</span>
-                <span className="stat-spark spark-four" />
+              <strong className="stat-value">{lecturers.length}</strong>
+              <div className="people-stat-foot">
+                <span>Data dosen terdaftar</span>
+                <button
+                  className="add-person-button"
+                  onClick={() => setAddType("dosen")}
+                >
+                  <i className="bi bi-plus-lg" /> Tambah dosen
+                </button>
               </div>
             </article>
           </section>
+
+          <section className="people-list-grid" aria-label="Data terbaru">
+            <article className="panel people-list-panel">
+              <div className="panel-heading people-list-heading">
+                <div>
+                  <h2>Data mahasiswa</h2>
+                  <p>{students.length} mahasiswa terdaftar</p>
+                </div>
+                <button
+                  className="text-button"
+                  onClick={() => setAddType("mahasiswa")}
+                >
+                  <i className="bi bi-plus-lg" /> Tambah
+                </button>
+              </div>
+              <div className="people-list">
+                {filteredStudents.length ? (
+                  filteredStudents.map((student) => (
+                    <div className="person-row" key={`student-${student.NIM}`}>
+                      <span className={`user-avatar ${student.tone}`}>
+                        {student.initials}
+                      </span>
+                      <span className="person-details">
+                        <strong>{student.name}</strong>
+                        <small>
+                          {student.NIM} · {student.email}
+                        </small>
+                      </span>
+                      <span className="status-badge status-active">
+                        <i />
+                        {student.status}
+                      </span>
+                    </div>
+                  ))
+                ) : (
+                  <p className="empty-people">Mahasiswa tidak ditemukan.</p>
+                )}
+              </div>
+            </article>
+            <article className="panel people-list-panel">
+              <div className="panel-heading people-list-heading">
+                <div>
+                  <h2>Data dosen</h2>
+                  <p>{lecturers.length} dosen terdaftar</p>
+                </div>
+                <button
+                  className="text-button"
+                  onClick={() => setAddType("dosen")}
+                >
+                  <i className="bi bi-plus-lg" /> Tambah
+                </button>
+              </div>
+              <div className="people-list">
+                {filteredLecturers.length ? (
+                  filteredLecturers.map((lecturer) => (
+                    <div
+                      className="person-row"
+                      key={`lecturer-${lecturer.NIDN}`}
+                    >
+                      <span className={`user-avatar ${lecturer.tone}`}>
+                        {lecturer.initials}
+                      </span>
+                      <span className="person-details">
+                        <strong>{lecturer.name}</strong>
+                        <small>
+                          {lecturer.NIDN} · {lecturer.email}
+                        </small>
+                      </span>
+                      <span className="status-badge status-active">
+                        <i />
+                        {lecturer.status}
+                      </span>
+                    </div>
+                  ))
+                ) : (
+                  <p className="empty-people">Dosen tidak ditemukan.</p>
+                )}
+              </div>
+            </article>
+          </section>
+
+          {addType && (
+            <div
+              className="modal-backdrop"
+              onMouseDown={(event) => {
+                if (event.target === event.currentTarget) setAddType("");
+              }}
+            >
+              <section
+                aria-labelledby="add-person-title"
+                aria-modal="true"
+                className="add-person-modal"
+                role="dialog"
+              >
+                <div className="modal-heading">
+                  <div>
+                    <span className="modal-icon">
+                      <i
+                        className={`bi ${addType === "mahasiswa" ? "bi-mortarboard" : "bi-person-workspace"}`}
+                      />
+                    </span>
+                    <h2 id="add-person-title">Tambah {addType}</h2>
+                    <p>Lengkapi informasi {addType} baru.</p>
+                  </div>
+                  <button
+                    aria-label="Tutup form"
+                    className="modal-close"
+                    onClick={() => setAddType("")}
+                  >
+                    <i className="bi bi-x-lg" />
+                  </button>
+                </div>
+                <form className="add-person-form" onSubmit={handleAddPerson}>
+                  <label>
+                    Nama lengkap
+                    <input
+                      autoFocus
+                      name="name"
+                      placeholder="Contoh: Budi Santoso"
+                      required
+                    />
+                  </label>
+                  <label>
+                    Email
+                    <input
+                      name="email"
+                      placeholder="nama@email.com"
+                      required
+                      type="email"
+                    />
+                  </label>
+                  <label>
+                    {addType === "mahasiswa" ? "NIM" : "NIDN"}
+                    <input
+                      name="identity"
+                      placeholder={
+                        addType === "mahasiswa"
+                          ? "Masukkan NIM"
+                          : "Masukkan NIDN"
+                      }
+                      required
+                    />
+                  </label>
+                  <div className="modal-actions">
+                    <button
+                      className="modal-cancel"
+                      onClick={() => setAddType("")}
+                      type="button"
+                    >
+                      Batal
+                    </button>
+                    <button className="modal-submit" type="submit">
+                      <i className="bi bi-plus-lg" /> Simpan {addType}
+                    </button>
+                  </div>
+                </form>
+              </section>
+            </div>
+          )}
 
           <footer className="dashboard-footer">
             <span>© Universitas Kikir</span>

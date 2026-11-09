@@ -1439,3 +1439,274 @@ tbody tr:last-child td {
     font-size: 7px;
   }
 }
+
+.people-stats {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-bottom: 17px;
+}
+
+.people-stat-card {
+  min-height: 143px;
+  padding: 16px 17px;
+}
+
+.people-stat-card .stat-value {
+  margin: 8px 0 7px;
+  font-size: 26px;
+}
+
+.people-stat-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  color: #929b93;
+  font-size: 9px;
+}
+
+.add-person-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 9px;
+  border: 1px solid #dfe8de;
+  border-radius: 6px;
+  color: #4e765a;
+  background: #f3f7f1;
+  font-size: 9px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+.add-person-button:hover {
+  border-color: #b9cbb9;
+  background: #eaf1e9;
+}
+
+.people-list-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 17px;
+  margin-bottom: 17px;
+}
+
+.people-list-panel {
+  min-width: 0;
+  padding-bottom: 7px;
+}
+
+.people-list-heading {
+  align-items: center;
+  margin-bottom: 11px;
+}
+
+.people-list-heading .text-button {
+  gap: 5px;
+}
+
+.people-list {
+  display: grid;
+}
+
+.person-row {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 0;
+  border-top: 1px solid #f0f1ed;
+}
+
+.person-details {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.person-details strong,
+.person-details small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.person-details strong {
+  color: #46534a;
+  font-size: 9px;
+  font-weight: 650;
+}
+
+.person-details small {
+  color: #9aa19a;
+  font-size: 8px;
+}
+
+.empty-people {
+  margin: 0;
+  padding: 16px 0;
+  border-top: 1px solid #f0f1ed;
+  color: #8d978e;
+  font-size: 9px;
+  text-align: center;
+}
+
+.modal-backdrop {
+  position: fixed;
+  z-index: 60;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  background: rgba(26, 40, 31, 0.48);
+  backdrop-filter: blur(3px);
+}
+
+.add-person-modal {
+  width: min(100%, 410px);
+  padding: 22px;
+  border: 1px solid #e8ebe4;
+  border-radius: 13px;
+  background: #fff;
+  box-shadow: 0 20px 70px rgba(24, 39, 29, 0.22);
+}
+
+.modal-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 19px;
+}
+
+.modal-icon {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  margin-bottom: 12px;
+  place-items: center;
+  border-radius: 9px;
+  color: var(--forest);
+  background: #edf3ec;
+  font-size: 15px;
+}
+
+.modal-heading h2 {
+  margin: 0;
+  color: #344238;
+  font-size: 16px;
+  font-weight: 680;
+}
+
+.modal-heading p {
+  margin: 5px 0 0;
+  color: #8f9990;
+  font-size: 10px;
+}
+
+.modal-close {
+  display: grid;
+  width: 29px;
+  height: 29px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid #eaede7;
+  border-radius: 7px;
+  color: #737e75;
+  background: #fff;
+  font-size: 10px;
+}
+
+.add-person-form {
+  display: grid;
+  gap: 13px;
+}
+
+.add-person-form label {
+  display: grid;
+  gap: 6px;
+  color: #536056;
+  font-size: 10px;
+  font-weight: 620;
+}
+
+.add-person-form input {
+  width: 100%;
+  height: 37px;
+  padding: 0 10px;
+  border: 1px solid #e5e9e2;
+  border-radius: 7px;
+  outline-color: #9fb69f;
+  color: #344238;
+  background: #fff;
+  font-size: 10px;
+  font-weight: 400;
+}
+
+.add-person-form input::placeholder {
+  color: #adb5ad;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 5px;
+}
+
+.modal-actions button {
+  display: inline-flex;
+  height: 34px;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 12px;
+  border-radius: 7px;
+  font-size: 10px;
+  font-weight: 620;
+}
+
+.modal-cancel {
+  border: 1px solid #e7eae4;
+  color: #6d786f;
+  background: #fff;
+}
+
+.modal-submit {
+  border: 1px solid var(--forest);
+  color: #fff;
+  background: var(--forest);
+}
+
+.modal-submit:hover {
+  background: #4c7359;
+}
+
+@media (max-width: 640px) {
+  .people-stats,
+  .people-list-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .people-stat-card {
+    min-height: 135px;
+    padding: 14px;
+  }
+
+  .people-stat-card .stat-value {
+    font-size: 24px;
+  }
+
+  .people-list-panel {
+    padding: 14px 13px 7px;
+  }
+
+  .person-row {
+    gap: 7px;
+  }
+
+  .person-row .status-badge {
+    padding: 4px 5px;
+  }
+}
