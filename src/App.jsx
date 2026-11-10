@@ -186,6 +186,7 @@ function App() {
       program: formData.get("program"),
       semester: Number(formData.get("semester")),
       courses: formData.getAll("courses"),
+      IPK: Number(formData.get("IPK")),
       advisor: formData.get("advisor"),
       status: formData.get("status"),
       tone: editingNim
@@ -544,8 +545,8 @@ function App() {
                     <th>MAHASISWA</th>
                     <th>PROGRAM / SEMESTER</th>
                     <th>MATA KULIAH DIAMBIL</th>
-                    <th>DOSEN PEMBIMBING</th>
                     <th>STATUS</th>
+                    <th>DOSEN PEMBIMBING</th>
                     <th>IPK</th>
                     <th>
                       <span className="visually-hidden">Aksi</span>
@@ -593,12 +594,6 @@ function App() {
                           </div>
                         </td>
                         <td>
-                          <span className="advisor-name">
-                            <i className="bi bi-person-circle" />
-                            {student.advisor}
-                          </span>
-                        </td>
-                        <td>
                           <span
                             className={`status-badge ${student.status === "Aktif" ? "status-active" : student.status === "Menunggu" ? "status-pending" : "status-inactive"}`}
                           >
@@ -607,7 +602,13 @@ function App() {
                           </span>
                         </td>
                         <td>
-                          {student.IPK ? (
+                          <span className="advisor-name">
+                            <i className="bi bi-person-circle" />
+                            {student.advisor}
+                          </span>
+                        </td>
+                        <td>
+                          {Number.isFinite(student.IPK) ? (
                             <span className="ipk-value">
                               {student.IPK.toFixed(2)}
                             </span>
@@ -629,7 +630,7 @@ function App() {
                     ))
                   ) : (
                     <tr>
-                      <td className="student-empty-state" colSpan="6">
+                      <td className="student-empty-state" colSpan="7">
                         <i className="bi bi-search" />
                         <strong>Mahasiswa tidak ditemukan</strong>
                         <span>
