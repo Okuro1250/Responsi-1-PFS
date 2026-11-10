@@ -4,7 +4,7 @@ import "./App.css";
 const navigation = [
   { label: "Dashboard", icon: "bi-grid-1x2-fill" },
   { label: "Data Mahasiswa", icon: "bi-people" },
-  { label: "Data Akademik", icon: "bi-book" },
+  { label: "Data Dosen", icon: "bi-people" },
   { label: "Matkul", icon: "bi-journal-text" },
   { label: "Data Nilai", icon: "bi-bar-chart" },
 ];
@@ -105,7 +105,7 @@ const matkul = [
 ];
 
 const pageDescriptions = {
-  "Data Akademik": "Area pengelolaan informasi akademik universitas.",
+  "Data Dosen": "Area pengelolaan informasi dosen universitas.",
   Matkul: "Area pengelolaan mata kuliah dan dosen pengampu.",
   "Data Nilai": "Area pengelolaan nilai dan hasil studi mahasiswa.",
   Pengaturan: "Pengaturan akun dan preferensi sistem administrator.",
@@ -455,7 +455,10 @@ function App() {
             <strong>Universitas Kikir</strong>
             <small>Workspace</small>
           </span>
-          <i className="bi bi-chevron-expand workspace-chevron" aria-hidden="true" />
+          <i
+            className="bi bi-chevron-expand workspace-chevron"
+            aria-hidden="true"
+          />
         </div>
 
         <p className="nav-caption">MENU UTAMA</p>
@@ -553,7 +556,10 @@ function App() {
                     Ada 4 pesanan baru yang perlu ditinjau.
                   </p>
                   <p>
-                    <span className="notice-dot notice-dot-soft" aria-hidden="true" />
+                    <span
+                      className="notice-dot notice-dot-soft"
+                      aria-hidden="true"
+                    />
                     Sarah Putri baru bergabung.
                   </p>
                 </div>
@@ -617,15 +623,14 @@ function App() {
                     : pageDescription}
               </p>
             </div>
-            <div className="welcome-date">
-              <i className="bi bi-calendar3" aria-hidden="true" />
-              <span>{formattedDate}</span>
-            </div>
           </section>
 
           {activePage === "Dashboard" && (
             <>
-              <section className="stats-grid overview-stats" aria-label="Ringkasan data">
+              <section
+                className="stats-grid overview-stats"
+                aria-label="Ringkasan data"
+              >
                 <StatCard
                   label="Total Mahasiswa"
                   value={students.length}
@@ -670,7 +675,10 @@ function App() {
 
           {activePage === "Data Mahasiswa" && (
             <>
-              <section className="stats-grid people-stats" aria-label="Ringkasan data mahasiswa">
+              <section
+                className="stats-grid people-stats"
+                aria-label="Ringkasan data mahasiswa"
+              >
                 <StatCard
                   label="Total Mahasiswa"
                   value={students.length}
@@ -678,16 +686,12 @@ function App() {
                   icon="bi-mortarboard"
                   tone="sage"
                 />
-                <StatCard
-                  label="Dosen Pembimbing"
-                  value={lecturers.length}
-                  detail={`${courses.length} mata kuliah tersedia`}
-                  icon="bi-person-workspace"
-                  tone="sand"
-                />
               </section>
 
-              <section className="panel student-table-panel" aria-labelledby="student-table-title">
+              <section
+                className="panel student-table-panel"
+                aria-labelledby="student-table-title"
+              >
                 <div className="student-table-heading">
                   <div>
                     <h2 id="student-table-title">Daftar mahasiswa</h2>
@@ -731,20 +735,22 @@ function App() {
                   </label>
 
                   <label className="filter-select">
-                    <span className="visually-hidden">Filter program studi</span>
+                    <span className="visually-hidden">
+                      Filter program studi
+                    </span>
                     <select
                       aria-label="Filter program studi"
                       onChange={(event) => setProgramFilter(event.target.value)}
                       value={programFilter}
                     >
                       <option>Semua program studi</option>
-                      {[...new Set(students.map((student) => student.program))].map(
-                        (program) => (
-                          <option key={program} value={program}>
-                            {program}
-                          </option>
-                        ),
-                      )}
+                      {[
+                        ...new Set(students.map((student) => student.program)),
+                      ].map((program) => (
+                        <option key={program} value={program}>
+                          {program}
+                        </option>
+                      ))}
                     </select>
                     <i className="bi bi-chevron-down" aria-hidden="true" />
                   </label>
@@ -771,14 +777,20 @@ function App() {
                     onClick={resetFilters}
                     type="button"
                   >
-                    <i className="bi bi-arrow-counterclockwise" aria-hidden="true" />
+                    <i
+                      className="bi bi-arrow-counterclockwise"
+                      aria-hidden="true"
+                    />
                     Reset
                   </button>
                 </div>
 
                 {pageError && (
                   <div className="page-error" role="alert">
-                    <i className="bi bi-exclamation-circle" aria-hidden="true" />
+                    <i
+                      className="bi bi-exclamation-circle"
+                      aria-hidden="true"
+                    />
                     {pageError}
                     <button
                       aria-label="Tutup pesan error"
@@ -795,7 +807,11 @@ function App() {
                   <strong>{students.length}</strong> mahasiswa
                 </div>
 
-                <div className="student-table-scroll" tabIndex="0" aria-label="Tabel mahasiswa, geser horizontal untuk melihat seluruh kolom">
+                <div
+                  className="student-table-scroll"
+                  tabIndex="0"
+                  aria-label="Tabel mahasiswa, geser horizontal untuk melihat seluruh kolom"
+                >
                   <table className="student-table">
                     <thead>
                       <tr>
@@ -816,7 +832,10 @@ function App() {
                           <tr key={student.NIM}>
                             <td>
                               <div className="student-identity">
-                                <span className={`user-avatar ${student.tone}`} aria-hidden="true">
+                                <span
+                                  className={`user-avatar ${student.tone}`}
+                                  aria-hidden="true"
+                                >
                                   {student.initials}
                                 </span>
                                 <span className="student-identity-copy">
@@ -828,7 +847,9 @@ function App() {
                               </div>
                             </td>
                             <td>
-                              <span className="program-name">{student.program}</span>
+                              <span className="program-name">
+                                {student.program}
+                              </span>
                               <small className="semester-label">
                                 Semester {student.semester}
                               </small>
@@ -842,7 +863,9 @@ function App() {
                                     </span>
                                   ))
                                 ) : (
-                                  <span className="table-muted">Belum mengambil</span>
+                                  <span className="table-muted">
+                                    Belum mengambil
+                                  </span>
                                 )}
                               </div>
                             </td>
@@ -856,13 +879,18 @@ function App() {
                             </td>
                             <td>
                               <span className="advisor-name">
-                                <i className="bi bi-person-circle" aria-hidden="true" />
+                                <i
+                                  className="bi bi-person-circle"
+                                  aria-hidden="true"
+                                />
                                 {student.advisor}
                               </span>
                             </td>
                             <td>
                               {Number.isFinite(student.IPK) ? (
-                                <span className="ipk-value">{student.IPK.toFixed(2)}</span>
+                                <span className="ipk-value">
+                                  {student.IPK.toFixed(2)}
+                                </span>
                               ) : (
                                 <span className="table-muted">Belum ada</span>
                               )}
@@ -875,7 +903,10 @@ function App() {
                                   onClick={() => openEditStudent(student)}
                                   type="button"
                                 >
-                                  <i className="bi bi-pencil" aria-hidden="true" />
+                                  <i
+                                    className="bi bi-pencil"
+                                    aria-hidden="true"
+                                  />
                                   <span>Edit</span>
                                 </button>
                                 <button
@@ -884,7 +915,10 @@ function App() {
                                   onClick={() => openDeleteStudent(student)}
                                   type="button"
                                 >
-                                  <i className="bi bi-trash3" aria-hidden="true" />
+                                  <i
+                                    className="bi bi-trash3"
+                                    aria-hidden="true"
+                                  />
                                   <span>Hapus</span>
                                 </button>
                               </div>
@@ -897,7 +931,8 @@ function App() {
                             <i className="bi bi-search" aria-hidden="true" />
                             <strong>Mahasiswa tidak ditemukan</strong>
                             <span>
-                              Ubah kata kunci atau filter untuk melihat data mahasiswa.
+                              Ubah kata kunci atau filter untuk melihat data
+                              mahasiswa.
                             </span>
                           </td>
                         </tr>
@@ -998,11 +1033,11 @@ function App() {
                     required
                   />
                   <datalist id="program-options">
-                    {[...new Set(students.map((student) => student.program))].map(
-                      (program) => (
-                        <option key={program} value={program} />
-                      ),
-                    )}
+                    {[
+                      ...new Set(students.map((student) => student.program)),
+                    ].map((program) => (
+                      <option key={program} value={program} />
+                    ))}
                   </datalist>
                 </label>
                 <label>
@@ -1035,7 +1070,9 @@ function App() {
                 <label>
                   Dosen pembimbing
                   <select
-                    defaultValue={editingStudent?.advisor ?? lecturers[0]?.name ?? ""}
+                    defaultValue={
+                      editingStudent?.advisor ?? lecturers[0]?.name ?? ""
+                    }
                     name="advisor"
                     required
                   >
@@ -1066,7 +1103,9 @@ function App() {
                   {courses.map((course) => (
                     <label className="course-checkbox" key={course.kode}>
                       <input
-                        defaultChecked={editingStudent?.courses.includes(course.nama) ?? false}
+                        defaultChecked={
+                          editingStudent?.courses.includes(course.nama) ?? false
+                        }
                         name="courses"
                         type="checkbox"
                         value={course.nama}
