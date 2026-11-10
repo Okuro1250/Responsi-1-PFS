@@ -110,15 +110,6 @@ const pageDescriptions = {
   "Pusat Bantuan": "Informasi bantuan untuk penggunaan sistem akademik.",
 };
 
-function getFormattedDate() {
-  return new Intl.DateTimeFormat("id-ID", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  }).format(new Date());
-}
-
 function getInitials(name) {
   return name
     .trim()
@@ -161,6 +152,8 @@ function App() {
   const [activePage, setActivePage] = useState("Dashboard");
   const [search, setSearch] = useState("");
   const [students, setStudents] = useState(users_mahasiswa);
+  const [lecturers, setLecturers] = useState(users_dosen);
+  const [courses, setCourses] = useState(matkul);
 
   const [recordModalType, setRecordModalType] = useState("");
   const [editingRecordId, setEditingRecordId] = useState("");
@@ -184,8 +177,6 @@ function App() {
   const profileMenuRef = useRef(null);
   const notificationMenuRef = useRef(null);
 
-  const lecturers = users_dosen;
-  const courses = matkul;
   const editingStudent = students.find((student) => student.NIM === editingNim);
   const deletingStudent = students.find(
     (student) => student.NIM === deletingNim,
@@ -194,8 +185,6 @@ function App() {
     recordModalType === "dosen"
       ? lecturers.find((lecturer) => lecturer.NIDN === editingRecordId)
       : courses.find((course) => course.kode === editingRecordId);
-  const formattedDate = getFormattedDate();
-
   const filteredStudents = useMemo(
     () =>
       students.filter((student) => {
