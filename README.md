@@ -57,3 +57,15 @@ Menampilkan informasi mata kuliah beserta dosen pengampu, meliputi:
 ![mahasiswa](./screenshot/image2.png)
 ![dosen](./screenshot/image3.png)
 ![input](./screenshot/input.png)
+
+### PROMPT YANG DIGUNAKAN
+
+1. buatkan aku sebuah navbar dan tampilan untuk dashboard user: admin dengan color palette 5D866C, C2A68C, E6D8C3, F5F5F0
+2. rombakin, fokus ke data mahasiswa, tunjukin tabelnya sama ada fitur edit, tapi variabel si dosen ama matkul dipertahanin, soalnya bakalan kepake untuk kedepannya, fokus ke data mahasiswa yang mengambil apa, dosen pembimbing saha, dll, buatin tabel yang terkait filter, search, status, dll. selain itu untuk masalah tampilan responsif ini belum terpenuhi, terus jujur masi kurang rapi si, sama keliatan ai slop, coba kamu atur-atur dalam segi tampilannya dengan aturan ini tapi ga berubah drastis gitu, cukup bikin user adminnya nyaman sama tampilannya:
+   https://github.com/miqdadbadjuber/anti-slop.git
+
+#### AI yang digunakan
+
+- Github Copilot
+- Chat-gpt
+- Gemini
