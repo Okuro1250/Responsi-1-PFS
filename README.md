@@ -4,6 +4,16 @@ Pada proyek responsi ini saya ditugaskan untuk membuat Dashboard Data Mahasiswa 
 
 ![DEADLINE](./gif/work-stressed.gif)
 
+## Cara menjalankannya
+
+Masuklah kedalam foldernya dengan cara:
+
+    cd RESPONSI-PFS1
+
+setelah itu lakukan:
+
+    npm run dev
+
 ## Fitur
 
 ### Dashboard
