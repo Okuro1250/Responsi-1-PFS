@@ -155,7 +155,9 @@ button {
   color: #c1ccc2;
   background: transparent;
   text-align: left;
-  transition: background 160ms ease, color 160ms ease;
+  transition:
+    background 160ms ease,
+    color 160ms ease;
 }
 
 .nav-item > i {
@@ -671,22 +673,74 @@ button {
   width: 50px;
   height: 19px;
   opacity: 0.8;
-  clip-path: polygon(0 75%, 18% 55%, 32% 67%, 48% 25%, 62% 40%, 78% 6%, 100% 20%, 100% 100%, 0 100%);
-  background: linear-gradient(180deg, #b8cfb9 0%, rgba(234, 241, 233, 0.2) 100%);
+  clip-path: polygon(
+    0 75%,
+    18% 55%,
+    32% 67%,
+    48% 25%,
+    62% 40%,
+    78% 6%,
+    100% 20%,
+    100% 100%,
+    0 100%
+  );
+  background: linear-gradient(
+    180deg,
+    #b8cfb9 0%,
+    rgba(234, 241, 233, 0.2) 100%
+  );
 }
 
 .spark-two {
-  clip-path: polygon(0 72%, 18% 65%, 35% 78%, 54% 37%, 67% 49%, 83% 16%, 100% 25%, 100% 100%, 0 100%);
-  background: linear-gradient(180deg, #d6c1a9 0%, rgba(243, 236, 227, 0.15) 100%);
+  clip-path: polygon(
+    0 72%,
+    18% 65%,
+    35% 78%,
+    54% 37%,
+    67% 49%,
+    83% 16%,
+    100% 25%,
+    100% 100%,
+    0 100%
+  );
+  background: linear-gradient(
+    180deg,
+    #d6c1a9 0%,
+    rgba(243, 236, 227, 0.15) 100%
+  );
 }
 
 .spark-three {
-  clip-path: polygon(0 60%, 20% 77%, 36% 45%, 52% 56%, 70% 21%, 82% 30%, 100% 5%, 100% 100%, 0 100%);
+  clip-path: polygon(
+    0 60%,
+    20% 77%,
+    36% 45%,
+    52% 56%,
+    70% 21%,
+    82% 30%,
+    100% 5%,
+    100% 100%,
+    0 100%
+  );
 }
 
 .spark-four {
-  clip-path: polygon(0 20%, 18% 37%, 36% 25%, 54% 60%, 71% 49%, 84% 78%, 100% 70%, 100% 100%, 0 100%);
-  background: linear-gradient(180deg, #d6c1a9 0%, rgba(243, 236, 227, 0.15) 100%);
+  clip-path: polygon(
+    0 20%,
+    18% 37%,
+    36% 25%,
+    54% 60%,
+    71% 49%,
+    84% 78%,
+    100% 70%,
+    100% 100%,
+    0 100%
+  );
+  background: linear-gradient(
+    180deg,
+    #d6c1a9 0%,
+    rgba(243, 236, 227, 0.15) 100%
+  );
 }
 
 .analytics-grid {
@@ -919,7 +973,12 @@ button {
   height: 136px;
   place-items: center;
   border-radius: 50%;
-  background: conic-gradient(var(--forest) 0% 42%, var(--clay) 42% 70%, #e6d8c3 70% 88%, #dfe5dc 88% 100%);
+  background: conic-gradient(
+    var(--forest) 0% 42%,
+    var(--clay) 42% 70%,
+    #e6d8c3 70% 88%,
+    #dfe5dc 88% 100%
+  );
 }
 
 .donut-center {
@@ -1254,7 +1313,7 @@ tbody tr:last-child td {
     inset: 0;
     display: block;
     border: 0;
-    background: rgba(19, 31, 23, 0.4);
+    background: rgba(19, 31, 23, 0.1);
   }
 
   .main-panel {
@@ -1559,7 +1618,6 @@ tbody tr:last-child td {
   display: grid;
   place-items: center;
   padding: 18px;
-  background: rgba(26, 40, 31, 0.48);
   backdrop-filter: blur(3px);
 }
 
@@ -1708,5 +1766,472 @@ tbody tr:last-child td {
 
   .person-row .status-badge {
     padding: 4px 5px;
+  }
+}
+
+.student-page-heading {
+  margin-bottom: 20px;
+}
+
+.student-page-heading .welcome-subtitle {
+  max-width: 520px;
+}
+
+.student-table-panel {
+  overflow: hidden;
+  padding: 0;
+}
+
+.student-table-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 20px;
+}
+
+.student-table-heading h2 {
+  margin: 0;
+  color: #344238;
+  font-size: 14px;
+  font-weight: 680;
+}
+
+.student-table-heading p {
+  margin: 5px 0 0;
+  color: #929b93;
+  font-size: 10px;
+}
+
+.primary-action {
+  display: inline-flex;
+  height: 35px;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 0 12px;
+  border: 1px solid var(--forest);
+  border-radius: 7px;
+  color: #fff;
+  background: var(--forest);
+  font-size: 10px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+.primary-action:hover {
+  border-color: #4c7359;
+  background: #4c7359;
+}
+
+.student-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 12px 20px;
+  border-top: 1px solid #f0f1ed;
+  border-bottom: 1px solid #f0f1ed;
+  background: #fbfbf9;
+}
+
+.student-search {
+  display: flex;
+  width: min(270px, 30vw);
+  height: 34px;
+  flex: 1 1 200px;
+  align-items: center;
+  gap: 8px;
+  padding: 0 10px;
+  border: 1px solid #e8ebe4;
+  border-radius: 6px;
+  color: #929b93;
+  background: #fff;
+}
+
+.student-search i {
+  font-size: 11px;
+}
+
+.student-search input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  color: #344238;
+  background: transparent;
+  font-size: 9px;
+}
+
+.student-search input::placeholder {
+  color: #a4aca4;
+}
+
+.filter-select {
+  position: relative;
+  display: flex;
+  min-width: 112px;
+  height: 34px;
+  align-items: center;
+}
+
+.filter-select select,
+.student-form-grid select {
+  width: 100%;
+  height: 100%;
+  appearance: none;
+  padding: 0 25px 0 9px;
+  border: 1px solid #e8ebe4;
+  border-radius: 6px;
+  outline-color: #b2c5b3;
+  color: #68746b;
+  background: #fff;
+  font-size: 9px;
+}
+
+.filter-select > i {
+  position: absolute;
+  right: 9px;
+  color: #909990;
+  font-size: 8px;
+  pointer-events: none;
+}
+
+.course-filter {
+  min-width: 145px;
+}
+
+.reset-filters {
+  display: inline-flex;
+  height: 32px;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 5px;
+  padding: 0 5px;
+  border: 0;
+  color: #7e8980;
+  background: transparent;
+  font-size: 9px;
+}
+
+.reset-filters:hover {
+  color: var(--forest);
+}
+
+.student-result-count {
+  padding: 12px 20px 10px;
+  color: #929b93;
+  font-size: 9px;
+}
+
+.student-result-count strong {
+  color: #526056;
+  font-weight: 680;
+}
+
+.student-table-scroll {
+  overflow-x: auto;
+}
+
+.student-table {
+  min-width: 980px;
+}
+
+.student-table th {
+  padding: 11px 13px;
+  color: #8d978e;
+  font-size: 8px;
+}
+
+.student-table td {
+  padding: 12px 13px;
+  vertical-align: middle;
+  font-size: 9px;
+}
+
+.student-table tbody tr:hover {
+  background: #fcfdfa;
+}
+
+.student-identity {
+  display: flex;
+  min-width: 185px;
+  align-items: center;
+  gap: 9px;
+}
+
+.student-identity > span:last-child {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.student-identity strong {
+  overflow: hidden;
+  color: #46534a;
+  font-size: 10px;
+  font-weight: 650;
+  text-overflow: ellipsis;
+}
+
+.student-identity small,
+.semester-label {
+  color: #9aa19a;
+  font-size: 8px;
+}
+
+.program-name {
+  display: block;
+  margin-bottom: 4px;
+  color: #566359;
+  font-size: 9px;
+  font-weight: 600;
+}
+
+.course-tags {
+  display: flex;
+  max-width: 230px;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.course-tag {
+  padding: 4px 6px;
+  border-radius: 5px;
+  color: #627568;
+  background: #eff3ed;
+  font-size: 8px;
+  white-space: nowrap;
+}
+
+.advisor-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #69756b;
+  white-space: nowrap;
+}
+
+.advisor-name i {
+  color: #9dae9d;
+  font-size: 12px;
+}
+
+.table-muted {
+  color: #a0a8a0;
+  font-size: 8px;
+}
+
+.status-inactive {
+  color: #737e75;
+  background: #f0f1ed;
+}
+
+.edit-student-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 8px;
+  border: 1px solid #e6ebe4;
+  border-radius: 6px;
+  color: #5b7761;
+  background: #fff;
+  font-size: 9px;
+}
+
+.edit-student-button:hover {
+  border-color: #c9d8c8;
+  background: #f2f6f0;
+}
+
+.student-empty-state {
+  height: 150px;
+  text-align: center;
+}
+
+.student-empty-state > * {
+  display: block;
+  margin: 4px auto;
+}
+
+.student-empty-state > i {
+  color: #a8b3a8;
+  font-size: 17px;
+}
+
+.student-empty-state > strong {
+  color: #566359;
+  font-size: 10px;
+}
+
+.student-empty-state > span {
+  color: #929b93;
+  font-size: 9px;
+}
+
+.student-modal {
+  max-height: min(92vh, 760px);
+  overflow-y: auto;
+}
+
+.student-modal .add-person-form {
+  gap: 14px;
+}
+
+.student-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.student-form-grid .form-span-two {
+  grid-column: 1 / -1;
+}
+
+.student-form-grid input,
+.student-form-grid select {
+  height: 36px;
+}
+
+.student-form-grid select {
+  font-size: 10px;
+}
+
+.course-checkboxes {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.course-checkboxes legend {
+  margin-bottom: 8px;
+  color: #536056;
+  font-size: 10px;
+  font-weight: 620;
+}
+
+.course-checkbox-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.course-checkbox {
+  display: flex !important;
+  min-height: 48px;
+  align-items: center;
+  gap: 8px !important;
+  padding: 7px 8px;
+  border: 1px solid #e8ebe4;
+  border-radius: 7px;
+  cursor: pointer;
+}
+
+.course-checkbox input {
+  width: 13px;
+  height: 13px;
+  margin: 0;
+  accent-color: var(--forest);
+}
+
+.course-checkbox span {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.course-checkbox strong {
+  color: #566359;
+  font-size: 9px;
+  font-weight: 600;
+}
+
+.course-checkbox small {
+  color: #9aa19a;
+  font-size: 8px;
+}
+
+.form-error {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: -4px 0 0;
+  color: #a45443;
+  font-size: 9px;
+}
+
+@media (max-width: 900px) {
+  .student-toolbar {
+    flex-wrap: wrap;
+  }
+
+  .student-search {
+    flex-basis: 100%;
+    width: 100%;
+  }
+
+  .filter-select {
+    flex: 1 1 130px;
+  }
+}
+
+@media (max-width: 640px) {
+  .student-page-heading {
+    gap: 10px;
+  }
+
+  .student-table-heading {
+    align-items: flex-start;
+    padding: 15px 13px;
+  }
+
+  .student-table-heading h2 {
+    font-size: 12px;
+  }
+
+  .student-table-heading p {
+    max-width: 200px;
+    font-size: 9px;
+    line-height: 1.5;
+  }
+
+  .primary-action {
+    height: 32px;
+    padding: 0 8px;
+    font-size: 8px;
+  }
+
+  .student-toolbar {
+    gap: 7px;
+    padding: 10px 13px;
+  }
+
+  .filter-select {
+    min-width: calc(50% - 5px);
+    flex-basis: calc(50% - 5px);
+  }
+
+  .course-filter {
+    min-width: calc(50% - 5px);
+  }
+
+  .reset-filters {
+    margin-left: auto;
+  }
+
+  .student-result-count {
+    padding-right: 13px;
+    padding-left: 13px;
+  }
+
+  .student-form-grid,
+  .course-checkbox-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .student-form-grid .form-span-two {
+    grid-column: auto;
   }
 }
