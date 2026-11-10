@@ -1,6 +1,6 @@
 # RESPONSI Dashboard Data Mahasiswa &Akademik
 
-        Pada proyek responsi ini saya ditugaskan untuk membuat Dashboard Data Mahasiswa & Akademik dengan syarat: Tabel daftar mahasiswa (NIM, Nama, Program Studi, IPK, Status Aktif), filter pencarian data, serta modal form input nilai atau edit data mahasiswa.
+Pada proyek responsi ini saya ditugaskan untuk membuat Dashboard Data Mahasiswa & Akademik dengan syarat: Tabel daftar mahasiswa (NIM, Nama, Program Studi, IPK, Status Aktif), filter pencarian data, serta modal form input nilai atau edit data mahasiswa.
 
 ![DEADLINE](./gif/work-stressed.gif)
 
