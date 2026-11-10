@@ -1,16 +1,49 @@
-# React + Vite
+# RESPONSI Dashboard Data Mahasiswa &Akademik
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+        Pada proyek responsi ini saya ditugaskan untuk membuat Dashboard Data Mahasiswa & Akademik dengan syarat: Tabel daftar mahasiswa (NIM, Nama, Program Studi, IPK, Status Aktif), filter pencarian data, serta modal form input nilai atau edit data mahasiswa.
 
-Currently, two official plugins are available:
+![DEADLINE](./gif/work-stressed.gif)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Fitur
 
-## React Compiler
+### Dashboard
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Menampilkan ringkasan informasi akademik universitas melalui beberapa komponen statistik, meliputi:
 
-## Expanding the ESLint configuration
+- Total mahasiswa yang terdaftar.
+- Total dosen yang terdaftar.
+- Total mata kuliah yang tersedia.
+- Navigasi cepat menuju halaman pengelolaan data mahasiswa.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Data Mahasiswa
+
+Menyediakan fitur pengelolaan informasi mahasiswa, meliputi:
+
+- Tambah Data: Menambahkan mahasiswa baru melalui formulir.
+- Edit Data: Memperbarui informasi mahasiswa yang sudah terdaftar.
+- Hapus Data: Menghapus data mahasiswa dengan konfirmasi sebelum penghapusan.
+- Pencarian: Mencari mahasiswa berdasarkan nama, NIM, email, dosen pembimbing, atau program studi.
+
+### Data Dosen
+
+Menampilkan informasi dosen yang terdaftar di universitas, meliputi:
+
+- Nama lengkap dosen.
+- Nomor Induk Dosen Nasional (NIDN).
+- Alamat email.
+- Status keaktifan dosen.
+
+### Data Mata Kuliah
+
+Menampilkan informasi mata kuliah beserta dosen pengampu, meliputi:
+
+- Kode mata kuliah.
+- Nama mata kuliah.
+- Nama dosen pengampu.
+
+## Screenshot
+
+![dashboard](./screenshot/image.png)
+![mahasiswa](./screenshot/image2.png)
+![dosen](./screenshot/image3.png)
+![input](./screenshot/input.png)
