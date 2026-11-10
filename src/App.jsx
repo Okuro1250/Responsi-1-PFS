@@ -6,7 +6,6 @@ const navigation = [
   { label: "Data Mahasiswa", icon: "bi-people" },
   { label: "Data Dosen", icon: "bi-people" },
   { label: "Matkul", icon: "bi-journal-text" },
-  { label: "Data Nilai", icon: "bi-bar-chart" },
 ];
 
 const preferenceNavigation = [
@@ -107,7 +106,6 @@ const matkul = [
 const pageDescriptions = {
   "Data Dosen": "Area pengelolaan informasi dosen universitas.",
   Matkul: "Area pengelolaan mata kuliah dan dosen pengampu.",
-  "Data Nilai": "Area pengelolaan nilai dan hasil studi mahasiswa.",
   Pengaturan: "Pengaturan akun dan preferensi sistem administrator.",
   "Pusat Bantuan": "Informasi bantuan untuk penggunaan sistem akademik.",
 };
@@ -163,6 +161,12 @@ function App() {
   const [activePage, setActivePage] = useState("Dashboard");
   const [search, setSearch] = useState("");
   const [students, setStudents] = useState(users_mahasiswa);
+
+  const [recordModalType, setRecordModalType] = useState("");
+  const [editingRecordId, setEditingRecordId] = useState("");
+  const [deletingRecord, setDeletingRecord] = useState(null);
+  const [recordFormError, setRecordFormError] = useState("");
+  const [recordNotice, setRecordNotice] = useState("");
   const [addType, setAddType] = useState("");
   const [editingNim, setEditingNim] = useState("");
   const [deletingNim, setDeletingNim] = useState("");
@@ -186,12 +190,16 @@ function App() {
   const deletingStudent = students.find(
     (student) => student.NIM === deletingNim,
   );
+  const editingRecord =
+    recordModalType === "dosen"
+      ? lecturers.find((lecturer) => lecturer.NIDN === editingRecordId)
+      : courses.find((course) => course.kode === editingRecordId);
   const formattedDate = getFormattedDate();
 
   const filteredStudents = useMemo(
     () =>
       students.filter((student) => {
-        const searchText = `${student.name} ${student.email} ${student.NIM} ${student.advisor} ${student.program}`;
+        const searchText = `${student.name} ${student.email} ${student.NIM} ${student.advisor || "Belum ditentukan"} ${student.program}`;
         const matchesSearch = searchText
           .toLowerCase()
           .includes(search.toLowerCase().trim());
@@ -211,8 +219,9 @@ function App() {
     [courseFilter, programFilter, search, statusFilter, students],
   );
 
-  const modalOpen = Boolean(addType || deletingNim);
-
+  const modalOpen = Boolean(
+    addType || deletingNim || recordModalType || deletingRecord,
+  );
   useEffect(() => {
     if (!modalOpen) return undefined;
 
@@ -234,6 +243,10 @@ function App() {
         setEditingNim("");
         setDeletingNim("");
         setStudentFormError("");
+        setRecordModalType("");
+        setEditingRecordId("");
+        setDeletingRecord(null);
+        setRecordFormError("");
         return;
       }
 
@@ -411,6 +424,227 @@ function App() {
       setPageError("Data mahasiswa gagal dihapus. Silakan coba kembali.");
       setDeletingNim("");
     }
+  }
+
+  function openAddRecord(type) {
+    previousFocusRef.current = document.activeElement;
+    setRecordModalType(type);
+    setEditingRecordId("");
+    setRecordFormError("");
+    setRecordNotice("");
+  }
+
+  function openEditRecord(type, record) {
+    previousFocusRef.current = document.activeElement;
+    setRecordModalType(type);
+    setEditingRecordId(type === "dosen" ? record.NIDN : record.kode);
+    setRecordFormError("");
+    setRecordNotice("");
+  }
+
+  function closeRecordModal() {
+    setRecordModalType("");
+    setEditingRecordId("");
+    setRecordFormError("");
+  }
+
+  function openDeleteRecord(type, record) {
+    previousFocusRef.current = document.activeElement;
+    setDeletingRecord({ type, record });
+    setRecordNotice("");
+  }
+
+  function handleRecordSubmit(event) {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+
+    if (recordModalType === "dosen") {
+      const name = String(formData.get("name") ?? "").trim();
+      const email = String(formData.get("email") ?? "").trim();
+      const NIDN = String(formData.get("NIDN") ?? "").trim();
+      const status = String(formData.get("status") ?? "Aktif");
+      const currentRecord = lecturers.find(
+        (lecturer) => lecturer.NIDN === editingRecordId,
+      );
+
+      const duplicateNidn = lecturers.some(
+        (lecturer) =>
+          lecturer.NIDN === NIDN && lecturer.NIDN !== editingRecordId,
+      );
+      const duplicateName = lecturers.some(
+        (lecturer) =>
+          lecturer.name.toLowerCase() === name.toLowerCase() &&
+          lecturer.NIDN !== editingRecordId,
+      );
+
+      if (duplicateNidn) {
+        setRecordFormError("NIDN tersebut sudah terdaftar.");
+        return;
+      }
+
+      if (duplicateName) {
+        setRecordFormError("Nama dosen tersebut sudah terdaftar.");
+        return;
+      }
+
+      const lecturer = {
+        initials: getInitials(name),
+        name,
+        email,
+        date:
+          currentRecord?.date ??
+          new Intl.DateTimeFormat("id-ID", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+          }).format(new Date()),
+        NIDN,
+        status,
+        tone:
+          currentRecord?.tone ??
+          (lecturers.length % 2 === 0 ? "indigo" : "teal"),
+      };
+
+      if (currentRecord) {
+        setLecturers((current) =>
+          current.map((item) =>
+            item.NIDN === editingRecordId ? lecturer : item,
+          ),
+        );
+
+        if (currentRecord.name !== name) {
+          setStudents((current) =>
+            current.map((student) =>
+              student.advisor === currentRecord.name
+                ? { ...student, advisor: name }
+                : student,
+            ),
+          );
+          setCourses((current) =>
+            current.map((course) =>
+              course.dosen === currentRecord.name
+                ? { ...course, dosen: name }
+                : course,
+            ),
+          );
+        }
+
+        setRecordNotice("Data dosen berhasil diperbarui.");
+      } else {
+        setLecturers((current) => [lecturer, ...current]);
+        setRecordNotice("Dosen berhasil ditambahkan.");
+      }
+    }
+
+    if (recordModalType === "matkul") {
+      const kode = String(formData.get("kode") ?? "")
+        .trim()
+        .toUpperCase();
+      const nama = String(formData.get("nama") ?? "").trim();
+      const dosen = String(formData.get("dosen") ?? "").trim();
+      const currentRecord = courses.find(
+        (course) => course.kode === editingRecordId,
+      );
+
+      const duplicateCode = courses.some(
+        (course) =>
+          course.kode.toUpperCase() === kode && course.kode !== editingRecordId,
+      );
+      const duplicateName = courses.some(
+        (course) =>
+          course.nama.toLowerCase() === nama.toLowerCase() &&
+          course.kode !== editingRecordId,
+      );
+
+      if (duplicateCode) {
+        setRecordFormError("Kode mata kuliah tersebut sudah digunakan.");
+        return;
+      }
+
+      if (duplicateName) {
+        setRecordFormError("Nama mata kuliah tersebut sudah terdaftar.");
+        return;
+      }
+
+      const course = { kode, nama, dosen };
+
+      if (currentRecord) {
+        setCourses((current) =>
+          current.map((item) =>
+            item.kode === editingRecordId ? course : item,
+          ),
+        );
+
+        if (currentRecord.nama !== nama) {
+          setCourseFilter("Semua mata kuliah");
+          setStudents((current) =>
+            current.map((student) => ({
+              ...student,
+              courses: student.courses.map((courseName) =>
+                courseName === currentRecord.nama ? nama : courseName,
+              ),
+            })),
+          );
+        }
+
+        setRecordNotice("Data mata kuliah berhasil diperbarui.");
+      } else {
+        setCourses((current) => [course, ...current]);
+        setRecordNotice("Mata kuliah berhasil ditambahkan.");
+      }
+    }
+
+    closeRecordModal();
+  }
+
+  function confirmDeleteRecord() {
+    if (!deletingRecord) return;
+
+    const { type, record } = deletingRecord;
+
+    if (type === "dosen") {
+      setLecturers((current) =>
+        current.filter((lecturer) => lecturer.NIDN !== record.NIDN),
+      );
+
+      // Jaga relasi agar tidak menyisakan nama dosen yang sudah dihapus.
+      setStudents((current) =>
+        current.map((student) =>
+          student.advisor === record.name
+            ? { ...student, advisor: "" }
+            : student,
+        ),
+      );
+
+      setCourses((current) =>
+        current.map((course) =>
+          course.dosen === record.name ? { ...course, dosen: "" } : course,
+        ),
+      );
+
+      setRecordNotice(
+        "Dosen berhasil dihapus. Relasi pembimbing dan pengampu yang terkait dikosongkan.",
+      );
+    } else {
+      setCourses((current) =>
+        current.filter((course) => course.kode !== record.kode),
+      );
+      setCourseFilter("Semua mata kuliah");
+
+      // Hapus mata kuliah ini juga dari daftar yang diambil mahasiswa.
+      setStudents((current) =>
+        current.map((student) => ({
+          ...student,
+          courses: student.courses.filter((name) => name !== record.nama),
+        })),
+      );
+
+      setRecordNotice(
+        "Mata kuliah berhasil dihapus dan dikeluarkan dari daftar pengambilan mahasiswa.",
+      );
+    }
+
+    setDeletingRecord(null);
   }
 
   const pageTitle = activePage;
@@ -927,12 +1161,340 @@ function App() {
                         ))
                       ) : (
                         <tr>
-                          <td className="student-empty-state" colSpan="7">
-                            <i className="bi bi-search" aria-hidden="true" />
-                            <strong>Mahasiswa tidak ditemukan</strong>
+                          <tbody>
+                            {lecturers.length > 0 ? (
+                              lecturers.map((lecturer) => (
+                                <tr key={lecturer.NIDN}>
+                                  <td>
+                                    <div className="student-identity">
+                                      <span
+                                        className={`user-avatar ${lecturer.tone}`}
+                                        aria-hidden="true"
+                                      >
+                                        {lecturer.initials}
+                                      </span>
+                                      <span className="student-identity-copy">
+                                        <strong>{lecturer.name}</strong>
+                                        <small>Terdaftar {lecturer.date}</small>
+                                      </span>
+                                    </div>
+                                  </td>
+                                  <td>{lecturer.NIDN}</td>
+                                  <td>{lecturer.email}</td>
+                                  <td>
+                                    <span
+                                      className={`status-badge ${
+                                        lecturer.status === "Aktif"
+                                          ? "status-active"
+                                          : "status-inactive"
+                                      }`}
+                                    >
+                                      <i aria-hidden="true" />
+                                      {lecturer.status}
+                                    </span>
+                                  </td>
+                                  <td>
+                                    <div className="row-actions">
+                                      <button
+                                        aria-label={`Edit data ${lecturer.name}`}
+                                        className="edit-student-button"
+                                        onClick={() =>
+                                          openEditRecord("dosen", lecturer)
+                                        }
+                                        type="button"
+                                      >
+                                        <i
+                                          className="bi bi-pencil"
+                                          aria-hidden="true"
+                                        />
+                                        <span>Edit</span>
+                                      </button>
+                                      <button
+                                        aria-label={`Hapus data ${lecturer.name}`}
+                                        className="delete-student-button"
+                                        onClick={() =>
+                                          openDeleteRecord("dosen", lecturer)
+                                        }
+                                        type="button"
+                                      >
+                                        <i
+                                          className="bi bi-trash3"
+                                          aria-hidden="true"
+                                        />
+                                        <span>Hapus</span>
+                                      </button>
+                                    </div>
+                                  </td>
+                                </tr>
+                              ))
+                            ) : (
+                              <tr>
+                                <td className="student-empty-state" colSpan="5">
+                                  <i
+                                    className="bi bi-people"
+                                    aria-hidden="true"
+                                  />
+                                  <strong>Belum ada data dosen</strong>
+                                  <span>
+                                    Tambahkan dosen untuk mulai mengisi data
+                                    akademik.
+                                  </span>
+                                </td>
+                              </tr>
+                            )}
+                          </tbody>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+            </>
+          )}
+
+          {activePage === "Data Dosen" && (
+            <>
+              <section
+                className="stats-grid people-stats"
+                aria-label="Ringkasan data dosen"
+              >
+                <StatCard
+                  label="Total Dosen"
+                  value={lecturers.length}
+                  detail="Dosen terdaftar"
+                  icon="bi-people"
+                  tone="sage"
+                />
+              </section>
+
+              <section
+                className="panel student-table-panel"
+                aria-labelledby="lecturer-table-title"
+              >
+                <div className="student-table-heading">
+                  <div>
+                    <h2 id="lecturer-table-title">Daftar dosen</h2>
+                    <p>Informasi dosen yang terdaftar di universitas.</p>
+                  </div>
+                  <button
+                    className="primary-action"
+                    onClick={() => openAddRecord("dosen")}
+                    type="button"
+                  >
+                    <i className="bi bi-plus-lg" aria-hidden="true" />
+                    Tambah dosen
+                  </button>
+                </div>
+
+                {recordNotice && (
+                  <div className="page-success" role="status">
+                    <i className="bi bi-check-circle" aria-hidden="true" />
+                    {recordNotice}
+                  </div>
+                )}
+
+                <div
+                  className="student-table-scroll"
+                  tabIndex="0"
+                  aria-label="Tabel dosen, geser horizontal untuk melihat seluruh kolom"
+                >
+                  <table className="student-table record-table">
+                    <thead>
+                      <tr>
+                        <th scope="col">DOSEN</th>
+                        <th scope="col">NIDN</th>
+                        <th scope="col">EMAIL</th>
+                        <th scope="col">STATUS</th>
+                        <th scope="col">AKSI</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {lecturers.map((lecturer) => (
+                        <tr key={lecturer.NIDN}>
+                          <td>
+                            <div className="student-identity">
+                              <span
+                                className={`user-avatar ${lecturer.tone}`}
+                                aria-hidden="true"
+                              >
+                                {lecturer.initials}
+                              </span>
+                              <span className="student-identity-copy">
+                                <strong>{lecturer.name}</strong>
+                                <small>Terdaftar {lecturer.date}</small>
+                              </span>
+                            </div>
+                          </td>
+                          <td>{lecturer.NIDN}</td>
+                          <td>{lecturer.email}</td>
+                          <td>
+                            <span
+                              className={`status-badge ${
+                                lecturer.status === "Aktif"
+                                  ? "status-active"
+                                  : "status-inactive"
+                              }`}
+                            >
+                              <i aria-hidden="true" />
+                              {lecturer.status}
+                            </span>
+                          </td>
+                          <td>
+                            <div className="row-actions">
+                              <button
+                                aria-label={`Edit data ${lecturer.name}`}
+                                className="edit-student-button"
+                                onClick={() =>
+                                  openEditRecord("dosen", lecturer)
+                                }
+                                type="button"
+                              >
+                                <i
+                                  className="bi bi-pencil"
+                                  aria-hidden="true"
+                                />
+                                <span>Edit</span>
+                              </button>
+                              <button
+                                aria-label={`Hapus data ${lecturer.name}`}
+                                className="delete-student-button"
+                                onClick={() =>
+                                  openDeleteRecord("dosen", lecturer)
+                                }
+                                type="button"
+                              >
+                                <i
+                                  className="bi bi-trash3"
+                                  aria-hidden="true"
+                                />
+                                <span>Hapus</span>
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+            </>
+          )}
+
+          {activePage === "Matkul" && (
+            <>
+              <section
+                className="stats-grid people-stats"
+                aria-label="Ringkasan mata kuliah"
+              >
+                <StatCard
+                  label="Total Mata Kuliah"
+                  value={courses.length}
+                  detail="Mata kuliah tersedia"
+                  icon="bi-journal-bookmark"
+                  tone="clay"
+                />
+              </section>
+
+              <section
+                className="panel student-table-panel"
+                aria-labelledby="course-table-title"
+              >
+                <div className="student-table-heading">
+                  <div>
+                    <h2 id="course-table-title">Daftar mata kuliah</h2>
+                    <p>Mata kuliah beserta dosen pengampu.</p>
+                  </div>
+                  <button
+                    className="primary-action"
+                    onClick={() => openAddRecord("matkul")}
+                    type="button"
+                  >
+                    <i className="bi bi-plus-lg" aria-hidden="true" />
+                    Tambah mata kuliah
+                  </button>
+                </div>
+
+                {recordNotice && (
+                  <div className="page-success" role="status">
+                    <i className="bi bi-check-circle" aria-hidden="true" />
+                    {recordNotice}
+                  </div>
+                )}
+
+                <div
+                  className="student-table-scroll"
+                  tabIndex="0"
+                  aria-label="Tabel mata kuliah, geser horizontal untuk melihat seluruh kolom"
+                >
+                  <table className="student-table record-table">
+                    <thead>
+                      <tr>
+                        <th scope="col">KODE MATA KULIAH</th>
+                        <th scope="col">NAMA MATA KULIAH</th>
+                        <th scope="col">DOSEN PENGAMPU</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {courses.length > 0 ? (
+                        courses.map((course) => (
+                          <tr key={course.kode}>
+                            <td>{course.kode}</td>
+                            <td>
+                              <strong className="record-primary">
+                                {course.nama}
+                              </strong>
+                            </td>
+                            <td>
+                              <span className="advisor-name">
+                                <i
+                                  className="bi bi-person-workspace"
+                                  aria-hidden="true"
+                                />
+                                {course.dosen || "Belum ditentukan"}
+                              </span>
+                            </td>
+                            <td>
+                              <div className="row-actions">
+                                <button
+                                  aria-label={`Edit mata kuliah ${course.nama}`}
+                                  className="edit-student-button"
+                                  onClick={() =>
+                                    openEditRecord("matkul", course)
+                                  }
+                                  type="button"
+                                >
+                                  <i
+                                    className="bi bi-pencil"
+                                    aria-hidden="true"
+                                  />
+                                  <span>Edit</span>
+                                </button>
+                                <button
+                                  aria-label={`Hapus mata kuliah ${course.nama}`}
+                                  className="delete-student-button"
+                                  onClick={() =>
+                                    openDeleteRecord("matkul", course)
+                                  }
+                                  type="button"
+                                >
+                                  <i
+                                    className="bi bi-trash3"
+                                    aria-hidden="true"
+                                  />
+                                  <span>Hapus</span>
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td className="student-empty-state" colSpan="4">
+                            <i className="bi bi-journal-x" aria-hidden="true" />
+                            <strong>Belum ada mata kuliah</strong>
                             <span>
-                              Ubah kata kunci atau filter untuk melihat data
-                              mahasiswa.
+                              Tambahkan mata kuliah untuk mengisi daftar
+                              akademik.
                             </span>
                           </td>
                         </tr>
@@ -944,12 +1506,15 @@ function App() {
             </>
           )}
 
-          {activePage !== "Dashboard" && activePage !== "Data Mahasiswa" && (
-            <PlaceholderPage
-              title={activePage}
-              description={pageDescription || "Bagian ini belum disiapkan."}
-            />
-          )}
+          {activePage !== "Dashboard" &&
+            activePage !== "Data Mahasiswa" &&
+            activePage !== "Data Dosen" &&
+            activePage !== "Matkul" && (
+              <PlaceholderPage
+                title={activePage}
+                description={pageDescription || "Bagian ini belum disiapkan."}
+              />
+            )}
 
           <footer className="dashboard-footer">
             <span>© Universitas Kikir</span>
@@ -1070,12 +1635,11 @@ function App() {
                 <label>
                   Dosen pembimbing
                   <select
-                    defaultValue={
-                      editingStudent?.advisor ?? lecturers[0]?.name ?? ""
-                    }
+                    defaultValue={editingStudent?.advisor ?? ""}
                     name="advisor"
                     required
                   >
+                    <option value="">Pilih dosen pembimbing</option>
                     {lecturers.map((lecturer) => (
                       <option key={lecturer.NIDN} value={lecturer.name}>
                         {lecturer.name}
@@ -1149,6 +1713,173 @@ function App() {
         </div>
       )}
 
+      {recordModalType && (
+        <div
+          className="modal-backdrop"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) closeRecordModal();
+          }}
+        >
+          <section
+            aria-labelledby="record-modal-title"
+            aria-modal="true"
+            className="add-person-modal student-modal"
+            ref={modalRef}
+            role="dialog"
+          >
+            <div className="modal-heading">
+              <div>
+                <span className="modal-icon" aria-hidden="true">
+                  <i
+                    className={`bi ${recordModalType === "dosen" ? "bi-person-workspace" : "bi-journal-text"}`}
+                  />
+                </span>
+                <h2 id="record-modal-title">
+                  {recordModalType === "dosen"
+                    ? editingRecord
+                      ? "Edit data dosen"
+                      : "Tambah dosen"
+                    : editingRecord
+                      ? "Edit mata kuliah"
+                      : "Tambah mata kuliah"}
+                </h2>
+                <p>
+                  {recordModalType === "dosen"
+                    ? "Lengkapi informasi dosen yang akan didaftarkan."
+                    : "Lengkapi kode, nama, dan dosen pengampu mata kuliah."}
+                </p>
+              </div>
+              <button
+                aria-label="Tutup form"
+                className="modal-close"
+                onClick={closeRecordModal}
+                type="button"
+              >
+                <i className="bi bi-x-lg" aria-hidden="true" />
+              </button>
+            </div>
+
+            <form className="add-person-form" onSubmit={handleRecordSubmit}>
+              {recordModalType === "dosen" ? (
+                <div className="student-form-grid">
+                  <label className="form-span-two">
+                    Nama lengkap
+                    <input
+                      autoFocus
+                      defaultValue={editingRecord?.name ?? ""}
+                      name="name"
+                      placeholder="Contoh: Budi Santoso"
+                      required
+                    />
+                  </label>
+                  <label>
+                    NIDN
+                    <input
+                      defaultValue={editingRecord?.NIDN ?? ""}
+                      name="NIDN"
+                      placeholder="Masukkan NIDN"
+                      required
+                    />
+                  </label>
+                  <label>
+                    Email
+                    <input
+                      defaultValue={editingRecord?.email ?? ""}
+                      name="email"
+                      placeholder="nama@email.com"
+                      required
+                      type="email"
+                    />
+                  </label>
+                  <label>
+                    Status
+                    <select
+                      defaultValue={editingRecord?.status ?? "Aktif"}
+                      name="status"
+                    >
+                      <option>Aktif</option>
+                      <option>Cuti</option>
+                      <option>Tidak Aktif</option>
+                    </select>
+                  </label>
+                </div>
+              ) : (
+                <div className="student-form-grid">
+                  <label>
+                    Kode mata kuliah
+                    <input
+                      autoFocus
+                      defaultValue={editingRecord?.kode ?? ""}
+                      name="kode"
+                      placeholder="Contoh: PW101"
+                      required
+                    />
+                  </label>
+                  <label>
+                    Nama mata kuliah
+                    <input
+                      defaultValue={editingRecord?.nama ?? ""}
+                      name="nama"
+                      placeholder="Contoh: Pemrograman Web"
+                      required
+                    />
+                  </label>
+                  <label className="form-span-two">
+                    Dosen pengampu
+                    <select
+                      defaultValue={editingRecord?.dosen ?? ""}
+                      name="dosen"
+                      required
+                      disabled={lecturers.length === 0}
+                    >
+                      <option value="">Pilih dosen pengampu</option>
+                      {lecturers.map((lecturer) => (
+                        <option key={lecturer.NIDN} value={lecturer.name}>
+                          {lecturer.name}
+                        </option>
+                      ))}
+                    </select>
+                    {lecturers.length === 0 && (
+                      <small>Tambahkan data dosen terlebih dahulu.</small>
+                    )}
+                  </label>
+                </div>
+              )}
+
+              {recordFormError && (
+                <p className="form-error" role="alert">
+                  <i className="bi bi-exclamation-circle" aria-hidden="true" />
+                  {recordFormError}
+                </p>
+              )}
+
+              <div className="modal-actions">
+                <button
+                  className="modal-cancel"
+                  onClick={closeRecordModal}
+                  type="button"
+                >
+                  Batal
+                </button>
+                <button
+                  className="modal-submit"
+                  type="submit"
+                  disabled={
+                    recordModalType === "matkul" && lecturers.length === 0
+                  }
+                >
+                  <i
+                    className={`bi ${editingRecord ? "bi-check2" : "bi-plus-lg"}`}
+                    aria-hidden="true"
+                  />
+                  {editingRecord ? "Simpan perubahan" : "Simpan data"}
+                </button>
+              </div>
+            </form>
+          </section>
+        </div>
+      )}
+
       {deletingStudent && (
         <div
           className="modal-backdrop"
@@ -1184,6 +1915,57 @@ function App() {
               <button
                 className="delete-confirm-button"
                 onClick={confirmDeleteStudent}
+                type="button"
+              >
+                Hapus data
+              </button>
+            </div>
+          </section>
+        </div>
+      )}
+      {deletingRecord && (
+        <div
+          className="modal-backdrop"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) setDeletingRecord(null);
+          }}
+        >
+          <section
+            aria-labelledby="delete-record-title"
+            aria-describedby="delete-record-description"
+            aria-modal="true"
+            className="confirm-modal"
+            ref={modalRef}
+            role="alertdialog"
+          >
+            <span className="confirm-icon" aria-hidden="true">
+              <i className="bi bi-trash3" />
+            </span>
+            <h2 id="delete-record-title">
+              Hapus{" "}
+              {deletingRecord.type === "dosen" ? "data dosen" : "mata kuliah"}?
+            </h2>
+            <p id="delete-record-description">
+              Data{" "}
+              <strong>
+                {deletingRecord.type === "dosen"
+                  ? deletingRecord.record.name
+                  : deletingRecord.record.nama}
+              </strong>{" "}
+              akan dihapus. Relasi data mahasiswa atau mata kuliah yang terkait
+              juga akan diperbarui. Tindakan ini tidak dapat dibatalkan.
+            </p>
+            <div className="modal-actions">
+              <button
+                className="modal-cancel"
+                onClick={() => setDeletingRecord(null)}
+                type="button"
+              >
+                Batal
+              </button>
+              <button
+                className="delete-confirm-button"
+                onClick={confirmDeleteRecord}
                 type="button"
               >
                 Hapus data
